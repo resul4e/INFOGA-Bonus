@@ -1,7 +1,7 @@
 #include "TestConvexHull.h"
 #include "SFML/Graphics.hpp"
 
-TestConvexHull::TestConvexHull(std::vector<glm::vec2> _points) : ConvexHullBase(_points)
+TestConvexHull::TestConvexHull(const std::vector<glm::vec2>& _points,  const std::string& _outputFile) : ConvexHullBase(_points, _outputFile)
 {
 }
 
@@ -22,6 +22,7 @@ void TestConvexHull::Draw(sf::RenderWindow& window)
 
 std::vector<glm::vec2> TestConvexHull::GenerateConvexHull()
 {
-	//DOES NOTHING YET.
+	//Should be saving the convex hull
+	SavePointsToFile(m_points);
 	return {};
 }

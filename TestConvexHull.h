@@ -4,7 +4,7 @@
 class TestConvexHull : public ConvexHullBase
 {
 public:
-	TestConvexHull(std::vector<glm::vec2> _points);
+	TestConvexHull(const std::vector<glm::vec2>& _points, const std::string& _outputFile = "");
 	~TestConvexHull();
 
 	void Draw(sf::RenderWindow& window) override;
