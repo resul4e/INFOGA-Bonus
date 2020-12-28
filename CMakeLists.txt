@@ -9,7 +9,12 @@ find_package(SFML 2.5 COMPONENTS system window graphics REQUIRED)
 set(GLM_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extern/glm/cmake/glm" CACHE FILEPATH "Filepath for GLM")
 find_package(GLM REQUIRED)
 
-add_executable("${PROJECT_NAME}" main.cpp)
+add_executable("${PROJECT_NAME}" 
+                "main.cpp"
+                "ConvexHullBase.cpp"
+                "ConvexHullBase.h"
+                "TestConvexHull.cpp"
+                "TestConvexHull.h")
 set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT "${PROJECT_NAME}")
 
 #Add sfml library links to the main executable
