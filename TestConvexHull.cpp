@@ -19,3 +19,9 @@ void TestConvexHull::Draw(sf::RenderWindow& window)
 	}
 	window.draw(vertices);
 }
+
+std::vector<glm::vec2> TestConvexHull::GenerateConvexHull()
+{
+	//DOES NOTHING YET.
+	return {};
+}

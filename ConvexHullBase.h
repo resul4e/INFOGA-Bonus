@@ -14,7 +14,10 @@ public:
 	ConvexHullBase(const ConvexHullBase& rhs) = default;
 	virtual ~ConvexHullBase() = default;
 
+	virtual std::vector<glm::vec2> GenerateConvexHull() = 0;
 	virtual void Draw(sf::RenderWindow& window) = 0;
 protected:
+
+	std::vector<int> m_convexHullIndices;
 	std::vector<glm::vec2> m_points;
 };
