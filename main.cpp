@@ -11,14 +11,11 @@ std::uniform_int_distribution<int> distribution(0, 200);
 
 int main()
 {
-    glm::vec2 point(10,20);
-    std::cout << to_string(point) << std::endl;
-
     sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);
 
-    std::vector<glm::vec2> points;
+    std::vector<glm::ivec2> points;
 	for(int i = 0; i < 100; i++)
 	{
         int x = distribution(generator);

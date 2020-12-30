@@ -3,14 +3,14 @@
 #include <iostream>
 #include <fstream>
 
-ConvexHullBase::ConvexHullBase(const std::vector<glm::vec2>& _points, const std::string _outputFile) :
+ConvexHullBase::ConvexHullBase(const std::vector<glm::ivec2>& _points, const std::string _outputFile) :
 	m_points(_points),
 	m_outputFile(_outputFile)
 {
 
 }
 
-void ConvexHullBase::SavePointsToFile(std::vector<glm::vec2> _points)
+void ConvexHullBase::SavePointsToFile(std::vector<glm::ivec2> _points)
 {
 	if(m_outputFile.empty())
 	{

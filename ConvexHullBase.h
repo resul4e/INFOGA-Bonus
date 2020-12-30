@@ -11,17 +11,17 @@ namespace sf
 class ConvexHullBase
 {
 public:
-	ConvexHullBase(const std::vector<glm::vec2>& _points, const std::string outputFile = "");
+	ConvexHullBase(const std::vector<glm::ivec2>& _points, const std::string outputFile = "");
 	ConvexHullBase(const ConvexHullBase& rhs) = default;
 	virtual ~ConvexHullBase() = default;
 
-	virtual std::vector<glm::vec2> GenerateConvexHull() = 0;
+	virtual std::vector<glm::ivec2> GenerateConvexHull() = 0;
 	virtual void Draw(sf::RenderWindow& window) = 0;
 protected:
-	void SavePointsToFile(std::vector<glm::vec2> _points);
+	void SavePointsToFile(std::vector<glm::ivec2> _points);
 	
 
 	std::vector<int> m_convexHullIndices;
-	std::vector<glm::vec2> m_points;
+	std::vector<glm::ivec2> m_points;
 	std::string m_outputFile;
 };
