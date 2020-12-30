@@ -16,7 +16,7 @@ public:
 	virtual ~ConvexHullBase() = default;
 
 	virtual std::vector<glm::ivec2> GenerateConvexHull() = 0;
-	virtual void Draw(sf::RenderWindow& window) = 0;
+	virtual void Draw(sf::RenderWindow& window);
 protected:
 	void SavePointsToFile(std::vector<glm::ivec2> _points);
 	
