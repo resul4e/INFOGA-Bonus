@@ -4,26 +4,34 @@
 #include <iostream>
 #include "TestConvexHull.h"
 #include <random>
+#include "JarvisMarch.h"
 
-std::default_random_engine generator;
-std::uniform_int_distribution<int> distribution(0, 200);
+//get a rng for random points
+std::default_random_engine generator{ static_cast<unsigned>(time(nullptr)) };
+std::uniform_int_distribution<int> distribution(20, 180);
 
+std::vector<glm::ivec2> GetRandomPoints(int count = 100)
+{
+    std::vector<glm::ivec2> points;
+    for (int i = 0; i < 100; i++)
+    {
+        int x = distribution(generator);
+        int y = distribution(generator);
+        points.emplace_back(x, y);
+    }
+    return points;
+}
 
 int main()
 {
+	//Create the window for drawing stuff
     sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
 
-    std::vector<glm::ivec2> points;
-	for(int i = 0; i < 100; i++)
-	{
-        int x = distribution(generator);
-        int y = distribution(generator);
-        points.push_back({ x,y });
-	}
-    points.push_back({ 10,10 });
-    TestConvexHull hull{ points };
+	//Create 100 random points
+    std::vector<glm::ivec2> points = GetRandomPoints();
+	//Create a new convex hull class and calculate the hull on the given points.
+    ConvexHullBase* hull = new JarvisMarch{ points };
+    hull->GenerateConvexHull();
 	
     while (window.isOpen())
     {
@@ -32,12 +40,24 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+
+        	if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R)
+        	{
+        		//Create a new array of points and a new convex hull.
+                points = GetRandomPoints();
+                delete hull;
+                hull = new JarvisMarch{ points };
+                hull->GenerateConvexHull();
+        	}
         }
 
         window.clear();
-        hull.Draw(window);
+        hull->Draw(window);
         window.display();
     }
 
+    delete hull;
+    hull = nullptr;
+	
     return 0;
 }

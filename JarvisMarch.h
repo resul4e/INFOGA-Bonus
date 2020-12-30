@@ -5,10 +5,10 @@
 class JarvisMarch : public ConvexHullBase
 {
 public:
-	JarvisMarch(const std::vector<glm::ivec2>& _points, std::string _outputPath);
-	~JarvisMarch();
+	JarvisMarch(const std::vector<glm::ivec2>& _points, std::string _outputPath = "");
+	~JarvisMarch() = default;
 
-private:
-
+	std::vector<glm::ivec2> GenerateConvexHull() override;
+	void Draw(sf::RenderWindow& window) override;
 };
 
