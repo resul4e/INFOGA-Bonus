@@ -111,25 +111,98 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
                b.x * (c.y - d.y) + c.x * (d.y - b.y) + d.x * (b.y - c.y) == 0){
 
                 return std::vector<int>(a.x < b.x ? leftHull.front() : leftHull.back(), c.x > d.x ? rightHull.front() : rightHull.back());
-            } else{
-                // If the points don't lie on a single line, we can use the general case
             }
+            // If the points don't lie on a single line, we can use the general case (I think)
         }
 
         int nLeft = leftHull.size();
         int nRight = rightHull.size();
 
+        // Get the rightmost point of the left hull and the leftmost point of the right hull
         int lStart, rStart = 0;
+        for(int i = 0; i < nLeft; ++i){
+            if(m_points[leftHull[i]].x > m_points[leftHull[lStart]].x){
+                lStart = i;
+            }
+        }
+
+        for(int i = 0; i < nRight; ++i){
+            if(m_points[rightHull[i]].x < m_points[rightHull[rStart]].x){
+                rStart = i;
+            }
+        }
 
         // General loop: keeping shuffling upwards or downwards until you hit the right tangent
+        // We first do the upper tangent, then the lower tangent
 
+        int ls = lStart;
+        int rs = rStart;
+        bool done = false;
+        while(!done){
+            done = true;
 
+            while(!(Slope(m_points[rightHull[rs]], m_points[leftHull[ls]], m_points[leftHull[(ls + nLeft - 1) % nLeft]])) > 0) {
+                ls = (ls + nLeft - 1) % nLeft;
+            }
 
+            while(!(Slope(m_points[leftHull[ls]], m_points[rightHull[rs]], m_points[rightHull[(rs + 1) % nRight]])) < 0){
+                done = false;
+                rs = (rs + 1) % nRight;
+            }
+        }
 
+        int upperl = ls;
+        int upperr = rs;
+
+        ls = lStart;
+        rs = rStart;
+        done = false;
+        while(!done){
+            done = true;
+
+            while(!(Slope(m_points[leftHull[ls]], m_points[rightHull[rs]], m_points[rightHull[(rs + nRight - 1) % nRight]])) > 0){
+                rs = (rs + nRight - 1) % nRight;
+            }
+
+            while(!(Slope(m_points[rightHull[rs]], m_points[leftHull[ls]], m_points[leftHull[(ls + 1) % nLeft]])) < 0){
+                done = false;
+                ls = (ls + 1) % nLeft;
+            }
+        }
+
+        int lowerl = ls;
+        int lowerr = rs;
+
+        std::vector<int> newHull;
+        int it = upperr;
+
+        newHull.push_back(rightHull[upperr]);
+        while(it != lowerr){
+            it = (it + 1) % nRight;
+            newHull.push_back(rightHull[it]);
+        }
+
+        it = lowerl;
+        newHull.push_back(leftHull[lowerl]);
+        while(it != upperl){
+            it = (it + 1) % nLeft;
+            newHull.push_back(leftHull[it]);
+        }
+
+        return newHull;
     }
+    return std::vector<int>();
 }
 
-// 
-bool DivideConquer::Slope(const glm::ivec2& a, const glm::ivec2& b, const glm::ivec2& c){
-    return (b.y - a.y)*(c.x - b.x) >= (b.x - a.x)*(c.y - b.y);
+// Calculates which way the tangent is compared to the polygon
+int DivideConquer::Slope(const glm::ivec2& a, const glm::ivec2& b, const glm::ivec2& c){
+    int product = (b.y - a.y)*(c.x - b.x) - (b.x - a.x)*(c.y - b.y);
+
+    if(product > 0){
+        return 1;
+    }
+    if(product < 0){
+        return -1;
+    }
+    return 0;
 }
