@@ -9,7 +9,10 @@ add_executable(${PROJECT_NAME}
                 "JarvisMarch.cpp"
                 "JarvisMarch.h"
                 "TestConvexHull.cpp"
-                "TestConvexHull.h")
+                "TestConvexHull.h"
+                "DivideConquer.cpp"
+                "DivideConquer.h"
+                )
 set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT "${PROJECT_NAME}")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")

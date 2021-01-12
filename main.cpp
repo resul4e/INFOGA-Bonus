@@ -5,15 +5,16 @@
 #include "TestConvexHull.h"
 #include <random>
 #include "JarvisMarch.h"
+#include "DivideConquer.h"
 
 //get a rng for random points
 std::default_random_engine generator{ static_cast<unsigned>(time(nullptr)) };
-std::uniform_int_distribution<int> distribution(20, 180);
+std::uniform_int_distribution<int> distribution(20, 780);
 
 std::vector<glm::ivec2> GetRandomPoints(int count = 100)
 {
     std::vector<glm::ivec2> points;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < count; i++)
     {
         int x = distribution(generator);
         int y = distribution(generator);
@@ -25,7 +26,7 @@ std::vector<glm::ivec2> GetRandomPoints(int count = 100)
 int main()
 {
 	//Create the window for drawing stuff
-    sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+    sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
 
 	//Create 100 random points
     std::vector<glm::ivec2> points = GetRandomPoints();
