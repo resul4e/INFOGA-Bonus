@@ -34,6 +34,7 @@ std::vector<glm::ivec2> DivideConquer::GenerateConvexHull(){
 
     // Start divide and conquer on the whole range of indices and give its result
     m_convexHullIndices = DividingAndConquering(indexRange);
+    m_convexHullIndices.push_back(m_convexHullIndices.front());
 
     std::vector<glm::ivec2> result;
 
@@ -66,12 +67,12 @@ void DivideConquer::Draw(sf::RenderWindow& window){
 std::vector<int> DivideConquer::DividingAndConquering(std::vector<int> indexRange){
     // Either we handle a base case, which is just a single point and thus its own convex hull
 
-    for(auto i : indexRange){
-        std::cout << i;
-    }
-    std::cout << std::endl;
+    // for(auto i : indexRange){
+    //     std::cout << i;
+    // }
+    // std::cout << std::endl;
 
-    std::cout << "indexrange size: " << indexRange.size() << std::endl;
+    // std::cout << "indexrange size: " << indexRange.size() << std::endl;
 
     if(indexRange.size() == 1){
         return indexRange;
@@ -87,15 +88,15 @@ std::vector<int> DivideConquer::DividingAndConquering(std::vector<int> indexRang
         leftHull = DividingAndConquering(l);
         rightHull = DividingAndConquering(r);
 
-        std::cout << "merging: ";
-        for(auto i: leftHull){
-            std::cout << i;
-        }
-        std::cout << "+";
-        for(auto i : rightHull){
-            std::cout << i;
-        }
-        std::cout << std::endl;
+        // std::cout << "merging: ";
+        // for(auto i: leftHull){
+        //     std::cout << i;
+        // }
+        // std::cout << "+";
+        // for(auto i : rightHull){
+        //     std::cout << i;
+        // }
+        // std::cout << std::endl;
         return Merge(leftHull, rightHull);
     }
 }
@@ -115,11 +116,11 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
         int r = rightHull.front();
 
         if(m_points[l] == m_points[r]){
-            std::cout << "merged 2" << std::endl;
+            // std::cout << "merged 2" << std::endl;
             return leftHull;
         } else{
             leftHull.push_back(r);
-            std::cout << "merged 2" << std::endl;
+            // std::cout << "merged 2" << std::endl;
             return leftHull;
         }
     } else if(hullSum < 6){
@@ -129,17 +130,18 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
         std::vector<int> result;
         std::vector<int> oldHull;
 
-        int l, r = 0;
+        int l = 0, r = 0;
 
-        std::cout << "merging under 6" << std::endl;
+        // std::cout << "combining vector under 6: size " << nLeft << ", " << nRight << std::endl;
 
-        while(l + r < hullSum - 2){
-            if(l == nLeft - 1){
+        while(l < nLeft || r < nRight){
+            // std::cout << "l=" << l << ", r=" << r << std::endl;
+            if(l == nLeft){
                 oldHull.push_back(rightHull[r]);
                 ++r;
                 continue;
             }
-            if(r == nRight - 1){
+            if(r == nRight){
                 oldHull.push_back(leftHull[l]);
                 ++l;
                 continue;
@@ -153,20 +155,18 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
                 ++r;
             }
         }
-        
-        result.push_back(oldHull[0]);
 
-        std::cout << "merging oldhull under 6: ";
-        for(int i : oldHull){
-            std::cout << i;
-        }
-        std::cout << std::endl;
+        // std::cout << "merging oldhull under 6: ";
+        // for(int i : oldHull){
+        //     std::cout << i;
+        // }
+        // std::cout << std::endl;
 
         int currentIndex = 0;
         int nextIndex = 1;
 
         do{
-            for(int i = 0; i < m_points.size(); i++){           
+            for(int i = 0; i < oldHull.size(); i++){      
                 glm::ivec3 crss = glm::cross(glm::vec3{ m_points[oldHull[nextIndex]] - m_points[oldHull[currentIndex]], 1 }, glm::vec3{ m_points[oldHull[i]] - m_points[oldHull[currentIndex]], 1 });
                 if(crss.z < 0)
                 {
@@ -180,12 +180,16 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
 
         } while(currentIndex != 0);
 
-        std::cout << "merged under 6" << std::endl;
+        // std::cout << "merged under 6 result: ";
+        // for(int i : result){
+        //     std::cout << i << ",";
+        // }
+        // std::cout << std::endl;
         return result;
     } else{
 
         // Get the rightmost point of the left hull and the leftmost point of the right hull
-        int lStart, rStart = 0;
+        int lStart = 0, rStart = 0;
         for(int i = 0; i < nLeft; ++i){
             if(m_points[leftHull[i]].x > m_points[leftHull[lStart]].x){
                 lStart = i;
@@ -198,6 +202,8 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
             }
         }
 
+        // std::cout << "found the closest points: " << m_points[leftHull[lStart]].x << "," << m_points[rightHull[rStart]].x << std::endl;
+
         // General loop(s): keeping shuffling upwards or downwards until you hit the right tangent
         // We first do the upper tangent, then the lower tangent
 
@@ -207,18 +213,20 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
         while(!done){
             done = true;
 
-            while(!(Slope(m_points[rightHull[rs]], m_points[leftHull[ls]], m_points[leftHull[(ls + nLeft - 1) % nLeft]])) > 0) {
-                ls = (ls + nLeft - 1) % nLeft;
+            while(Slope(m_points[rightHull[rs]], m_points[leftHull[ls]], m_points[leftHull[(ls + 1) % nLeft]]) >= 0) {
+                ls = (ls + 1) % nLeft;
             }
 
-            while(!(Slope(m_points[leftHull[ls]], m_points[rightHull[rs]], m_points[rightHull[(rs + 1) % nRight]])) < 0){
+            while(Slope(m_points[leftHull[ls]], m_points[rightHull[rs]], m_points[rightHull[(rs + nRight - 1) % nRight]]) <= 0){
                 done = false;
-                rs = (rs + 1) % nRight;
+                rs = (rs + nRight - 1) % nRight;
             }
         }
 
-        int upperl = ls;
-        int upperr = rs;
+        // std::cout << "upper tangent: " << m_points[leftHull[ls]].x << "," << m_points[rightHull[rs]].x << std::endl; 
+
+        int lowerl = ls;
+        int lowerr = rs;
 
         ls = lStart;
         rs = rStart;
@@ -226,18 +234,18 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
         while(!done){
             done = true;
 
-            while(!(Slope(m_points[leftHull[ls]], m_points[rightHull[rs]], m_points[rightHull[(rs + nRight - 1) % nRight]])) > 0){
-                rs = (rs + nRight - 1) % nRight;
+            while(Slope(m_points[leftHull[ls]], m_points[rightHull[rs]], m_points[rightHull[(rs + 1) % nRight]]) >= 0){
+                rs = (rs + 1) % nRight;
             }
 
-            while(!(Slope(m_points[rightHull[rs]], m_points[leftHull[ls]], m_points[leftHull[(ls + 1) % nLeft]])) < 0){
+            while(Slope(m_points[rightHull[rs]], m_points[leftHull[ls]], m_points[leftHull[(ls + nLeft - 1) % nLeft]]) <= 0){
                 done = false;
-                ls = (ls + 1) % nLeft;
+                ls = (ls + nLeft - 1) % nLeft;
             }
         }
 
-        int lowerl = ls;
-        int lowerr = rs;
+        int upperl = ls;
+        int upperr = rs;
 
         std::vector<int> newHull;
         int it = upperr;
@@ -255,7 +263,11 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
             newHull.push_back(leftHull[it]);
         }
 
-        std::cout << "merged over 6" << std::endl;
+        // std::cout << "merged over 6: ";
+        // for(int i : newHull){
+        //     std::cout << i << ",";
+        // }
+        // std::cout << std::endl;
         return newHull;
     }
     return std::vector<int>();
