@@ -47,28 +47,66 @@ std::vector<glm::ivec2> DivideConquer::GenerateConvexHull(){
 }
 
 void DivideConquer::Draw(sf::RenderWindow& window){
+    //Draw the points
+    ConvexHullBase::Draw(window);
 
+    //Add the points to a vertex array.
+    sf::VertexArray lines(sf::LinesStrip, m_convexHullIndices.size());
+    for(int i = 0; i < m_convexHullIndices.size(); i++)
+    {
+        lines[i].position = sf::Vector2f(static_cast<float>(m_points[m_convexHullIndices[i]].x), static_cast<float>(m_points[m_convexHullIndices[i]].y));
+        lines[i].color = sf::Color(sf::Color::Blue);
+    }
+
+    //Draw the vertexArray as connected lines.
+    window.draw(lines);
 }
 
 // Assumes the input has been sorted
 std::vector<int> DivideConquer::DividingAndConquering(std::vector<int> indexRange){
     // Either we handle a base case, which is just a single point and thus its own convex hull
+
+    for(auto i : indexRange){
+        std::cout << i;
+    }
+    std::cout << std::endl;
+
+    std::cout << "indexrange size: " << indexRange.size() << std::endl;
+
     if(indexRange.size() == 1){
         return indexRange;
     } 
     // Or we merge the convex hulls for two subranges of indices
     else{
         int s = indexRange.size();
-        std::vector<int> l(indexRange.begin(), indexRange.begin() + s/2);
-        std::vector<int> r(indexRange.begin() + s/2 + 1, indexRange.end());
 
-        return Merge(DividingAndConquering(l), DividingAndConquering(r));
+        std::vector<int> l(indexRange.begin(), indexRange.begin() + s/2);
+        std::vector<int> r(indexRange.begin() + s/2, indexRange.end());
+
+        std::vector<int> leftHull, rightHull;
+        leftHull = DividingAndConquering(l);
+        rightHull = DividingAndConquering(r);
+
+        std::cout << "merging: ";
+        for(auto i: leftHull){
+            std::cout << i;
+        }
+        std::cout << "+";
+        for(auto i : rightHull){
+            std::cout << i;
+        }
+        std::cout << std::endl;
+        return Merge(leftHull, rightHull);
     }
 }
 
 // Assumes both parameter convex hull indices are disjoint, and corresponding convex hulls non-intersecting
 std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int> rightHull){
-    int hullSum = leftHull.size() + rightHull.size();
+    
+    int nLeft = leftHull.size();
+    int nRight = rightHull.size();
+
+    int hullSum = nLeft + nRight;
 
     // In the case of the merge of just two points, both points will always be part of the convex hull, except if they are equal
     if(hullSum == 2){
@@ -77,46 +115,74 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
         int r = rightHull.front();
 
         if(m_points[l] == m_points[r]){
+            std::cout << "merged 2" << std::endl;
             return leftHull;
         } else{
-            return std::vector<int>(l, r);
-        }
-    } else if(hullSum == 3){
-        // This means rightHull consists of 1 point, since the rightHull will always have at most the same number of points as the leftHull
-        // To check if these 3 points lie on 1 line without dividing, compute the area of the triangle they form
-
-        glm::ivec2 a = m_points[leftHull.front()];
-        glm::ivec2 b = m_points[leftHull.back()];
-        glm::ivec2 c = m_points[rightHull.front()];
-
-        // Be careful that we want to preserve the clockwise ordering of the points
-        if(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y) > 0){
-            leftHull.insert(leftHull.end(), rightHull.front());
+            leftHull.push_back(r);
+            std::cout << "merged 2" << std::endl;
             return leftHull;
-        } else{
-            rightHull.insert(rightHull.end(), a.x < b.x ? leftHull.front() : leftHull.back());
         }
-    } else{
+    } else if(hullSum < 6){
+        // Just brute force it using the same algorithm as the JarvisMarch, not easy to do using the tangent method
+        // First merge the two hulls we get
 
-        if(hullSum == 4){
-        // This means we have two line segment convex hulls, so we only need to check if they lie on the same line
-        // We do this by twice checking if the points form a triangle or not
+        std::vector<int> result;
+        std::vector<int> oldHull;
 
-            glm::ivec2 a = m_points[leftHull.front()];
-            glm::ivec2 b = m_points[leftHull.back()];
-            glm::ivec2 c = m_points[rightHull.front()];
-            glm::ivec2 d = m_points[rightHull.back()];
+        int l, r = 0;
 
-            if(a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y) == 0 &&
-               b.x * (c.y - d.y) + c.x * (d.y - b.y) + d.x * (b.y - c.y) == 0){
+        std::cout << "merging under 6" << std::endl;
 
-                return std::vector<int>(a.x < b.x ? leftHull.front() : leftHull.back(), c.x > d.x ? rightHull.front() : rightHull.back());
+        while(l + r < hullSum - 2){
+            if(l == nLeft - 1){
+                oldHull.push_back(rightHull[r]);
+                ++r;
+                continue;
             }
-            // If the points don't lie on a single line, we can use the general case (I think)
-        }
+            if(r == nRight - 1){
+                oldHull.push_back(leftHull[l]);
+                ++l;
+                continue;
+            }
 
-        int nLeft = leftHull.size();
-        int nRight = rightHull.size();
+            if(m_points[leftHull[l]].x < m_points[rightHull[r]].x){
+                oldHull.push_back(leftHull[l]);
+                ++l;
+            } else{
+                oldHull.push_back(rightHull[r]);
+                ++r;
+            }
+        }
+        
+        result.push_back(oldHull[0]);
+
+        std::cout << "merging oldhull under 6: ";
+        for(int i : oldHull){
+            std::cout << i;
+        }
+        std::cout << std::endl;
+
+        int currentIndex = 0;
+        int nextIndex = 1;
+
+        do{
+            for(int i = 0; i < m_points.size(); i++){           
+                glm::ivec3 crss = glm::cross(glm::vec3{ m_points[oldHull[nextIndex]] - m_points[oldHull[currentIndex]], 1 }, glm::vec3{ m_points[oldHull[i]] - m_points[oldHull[currentIndex]], 1 });
+                if(crss.z < 0)
+                {
+                    nextIndex = i;
+                }
+            }
+            result.push_back(oldHull[nextIndex]);
+        
+            currentIndex = nextIndex;
+            nextIndex = 0;
+
+        } while(currentIndex != 0);
+
+        std::cout << "merged under 6" << std::endl;
+        return result;
+    } else{
 
         // Get the rightmost point of the left hull and the leftmost point of the right hull
         int lStart, rStart = 0;
@@ -132,7 +198,7 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
             }
         }
 
-        // General loop: keeping shuffling upwards or downwards until you hit the right tangent
+        // General loop(s): keeping shuffling upwards or downwards until you hit the right tangent
         // We first do the upper tangent, then the lower tangent
 
         int ls = lStart;
@@ -189,6 +255,7 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
             newHull.push_back(leftHull[it]);
         }
 
+        std::cout << "merged over 6" << std::endl;
         return newHull;
     }
     return std::vector<int>();

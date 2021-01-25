@@ -31,7 +31,7 @@ int main()
 	//Create 100 random points
     std::vector<glm::ivec2> points = GetRandomPoints();
 	//Create a new convex hull class and calculate the hull on the given points.
-    ConvexHullBase* hull = new JarvisMarch{ points };
+    ConvexHullBase* hull = new DivideConquer{ points };
     hull->GenerateConvexHull();
 	
     while (window.isOpen())
@@ -47,7 +47,7 @@ int main()
         		//Create a new array of points and a new convex hull.
                 points = GetRandomPoints();
                 delete hull;
-                hull = new JarvisMarch{ points };
+                hull = new DivideConquer{ points };
                 hull->GenerateConvexHull();
         	}
         }
