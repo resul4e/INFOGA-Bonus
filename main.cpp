@@ -29,6 +29,8 @@ std::vector<glm::ivec2> GetRandomPoints(int count = 100)
 
 int main()
 {
+    RunPerformanceTests();
+	
 	//Create the window for drawing stuff
     sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
 
