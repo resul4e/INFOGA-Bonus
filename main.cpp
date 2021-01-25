@@ -7,6 +7,7 @@
 #include "JarvisMarch.h"
 #include "DivideConquer.h"
 #include <chrono>
+#include "PerformanceTests.h"
 
 using namespace std::chrono;
 
@@ -24,25 +25,6 @@ std::vector<glm::ivec2> GetRandomPoints(int count = 100)
         points.emplace_back(x, y);
     }
     return points;
-}
-
-void RunPerformanceTests()
-{
-    for (int i = 1; i < 18; i++)
-    {
-        //Create 100 random points
-        std::vector<glm::ivec2> points = GetRandomPoints(std::pow(2, i));
-        //Create a new convex hull class and calculate the hull on the given points.
-        ConvexHullBase* hull = new JarvisMarch{ points };
-        auto t1 = high_resolution_clock::now();
-        hull->GenerateConvexHull();
-        auto t2 = high_resolution_clock::now();
-
-        std::cout << std::pow(2, i) << " points --- " << hull->GetConvexHullCount() << " points on hull --- " << duration<double, std::micro>(t2 - t1).count() << " microseconds\n";
-
-        delete hull;
-        hull = nullptr;
-    }
 }
 
 int main()
