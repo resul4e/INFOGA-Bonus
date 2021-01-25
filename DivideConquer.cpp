@@ -162,6 +162,16 @@ std::vector<int> DivideConquer::Merge(std::vector<int> leftHull, std::vector<int
         // }
         // std::cout << std::endl;
 
+        std::sort(oldHull.begin(), oldHull.end(), [this](int lhs, int rhs)
+        {
+                int xDiff = m_points[lhs].x - m_points[rhs].x;
+                if (xDiff == 0)
+                {
+                    return m_points[lhs].y > m_points[rhs].y;
+                }
+                return xDiff < 0;
+        });
+    	
         int currentIndex = 0;
         int nextIndex = 1;
 
