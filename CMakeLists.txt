@@ -12,6 +12,8 @@ add_executable(${PROJECT_NAME}
                 "TestConvexHull.h"
                 "DivideConquer.cpp"
                 "DivideConquer.h"
+                "PerformanceTests.h"
+                "PerformanceTests.cpp"
                 )
 set_property (DIRECTORY PROPERTY VS_STARTUP_PROJECT "${PROJECT_NAME}")
 

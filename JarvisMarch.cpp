@@ -10,6 +10,17 @@ JarvisMarch::JarvisMarch(const std::vector<glm::ivec2>& _points, std::string _ou
 
 std::vector<glm::ivec2> JarvisMarch::GenerateConvexHull()
 {
+	if (m_points.empty())
+	{
+		return m_points;
+	}
+	
+	if(m_points.size() == 1)
+	{
+		m_convexHullIndices.push_back(0);
+		return  m_points;
+	}
+	
 	//Sort points on left to right first, then on y value.
 	std::sort(m_points.begin(), m_points.end(), [](glm::ivec2 lhs, glm::ivec2 rhs)
 	{

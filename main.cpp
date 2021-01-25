@@ -6,6 +6,10 @@
 #include <random>
 #include "JarvisMarch.h"
 #include "DivideConquer.h"
+#include <chrono>
+#include "PerformanceTests.h"
+
+using namespace std::chrono;
 
 //get a rng for random points
 std::default_random_engine generator{ static_cast<unsigned>(time(nullptr)) };
