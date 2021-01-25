@@ -9,6 +9,7 @@
 #include <random>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "DivideConquer.h"
 
 //get a rng for random points
 extern std::default_random_engine generator;
@@ -123,22 +124,4 @@ void RunPerformanceTests()
 {
     RunNH();
     RunN();
-	
-    for (int i = 1; i < 10; i++)
-    {
-        //Create 100 random points
-        std::vector<glm::ivec2> points = GetRandomPoints(std::pow(2, i));
-        //Create a new convex hull class and calculate the hull on the given points.
-        ConvexHullBase* hull = new JarvisMarch{ points };
-        auto t1 = std::chrono::high_resolution_clock::now();
-        hull->GenerateConvexHull();
-        auto t2 = std::chrono::high_resolution_clock::now();
-
-        std::cout << std::pow(2, i) << " points --- " << hull->GetConvexHullCount() << " points on hull --- " << std::chrono::duration<double, std::micro>(t2 - t1).count() << " microseconds\n";
-
-        delete hull;
-        hull = nullptr;
-    }
-
-
 }
