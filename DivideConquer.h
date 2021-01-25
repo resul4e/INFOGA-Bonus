@@ -13,5 +13,5 @@ public:
 private:
     std::vector<int> DividingAndConquering(std::vector<int> indexRange);
     std::vector<int> Merge(std::vector<int> leftHull, std::vector<int> rightHull);
-    bool Slope(const glm::ivec2& a, const glm::ivec2& b, const glm::ivec2& c);
+    int Slope(const glm::ivec2& a, const glm::ivec2& b, const glm::ivec2& c);
 };
