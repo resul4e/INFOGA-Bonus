@@ -70,9 +70,6 @@ std::vector<glm::ivec2> JarvisMarch::GenerateConvexHull()
 
 void JarvisMarch::Draw(sf::RenderWindow& window)
 {
-	//Draw the points
-	ConvexHullBase::Draw(window);
-
 	//Add the points to a vertex array.
 	sf::VertexArray lines(sf::LinesStrip, m_convexHullIndices.size());
 	for(int i = 0; i < m_convexHullIndices.size(); i++)
@@ -83,4 +80,7 @@ void JarvisMarch::Draw(sf::RenderWindow& window)
 
 	//Draw the vertexArray as connected lines.
 	window.draw(lines);
+
+	//Draw the points
+	ConvexHullBase::Draw(window);
 }
