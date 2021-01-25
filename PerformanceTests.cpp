@@ -48,7 +48,7 @@ void RunNH()
             //Get a number of points that are guaranteed to be on the hull
 			//and a set of points inside this hull
             std::vector<glm::ivec2> hullPoints = CreateCircleOfPoints(i * 10);
-            std::vector<glm::ivec2> innerPoints = GetRandomPoints(8000 - i * 10);
+            std::vector<glm::ivec2> innerPoints = GetRandomPoints(1000 - i * 10);
 
             //combine all points
             std::vector<glm::ivec2> allPoints;
@@ -56,7 +56,7 @@ void RunNH()
             allPoints.insert(allPoints.end(), innerPoints.begin(), innerPoints.end());
 
             //create a new convex hull object and generate the actual hull, measuring how long this takes.
-            ConvexHullBase* hull = new JarvisMarch{ allPoints };
+            ConvexHullBase* hull = new DivideConquer{ allPoints };
             auto t1 = std::chrono::high_resolution_clock::now();
             hull->GenerateConvexHull();
             auto t2 = std::chrono::high_resolution_clock::now();
@@ -69,6 +69,7 @@ void RunNH()
         }
         //Save the number of points on the hull and the average time it took to finish 1 cycle of the algorithm
         output << i * 10 << "," << averageTime / static_cast<float>(repeats) << std::endl;
+        std::cout << "N " << i / 0.6f << "%" << std::endl;
     }
 
     output.close();
@@ -101,7 +102,7 @@ void RunN()
             allPoints.insert(allPoints.end(), innerPoints.begin(), innerPoints.end());
 
     		//create a new convex hull object and generate the actual hull, measuring how long this takes.
-            ConvexHullBase* hull = new JarvisMarch{ allPoints };
+            ConvexHullBase* hull = new DivideConquer{ allPoints };
             auto t1 = std::chrono::high_resolution_clock::now();
             hull->GenerateConvexHull();
             auto t2 = std::chrono::high_resolution_clock::now();
@@ -115,6 +116,7 @@ void RunN()
     	}
     	//Save the number of points in the set and the average time it took to finish 1 cycle of the algorithm
         output << i * 10 << "," << averageTime / static_cast<float>(repeats) << std::endl;
+        std::cout << "N " << i / 8.f << "%" << std::endl;
     }
 
     output.close();
