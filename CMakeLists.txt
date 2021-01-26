@@ -12,6 +12,8 @@ add_executable(${PROJECT_NAME}
                 "TestConvexHull.h"
                 "DivideConquer.cpp"
                 "DivideConquer.h"
+                "DivideAndConquer.cpp"
+                "DivideAndConquer.h"
                 "PerformanceTests.h"
                 "PerformanceTests.cpp"
                 )

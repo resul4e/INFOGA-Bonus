@@ -8,6 +8,7 @@
 #include "DivideConquer.h"
 #include <chrono>
 #include "PerformanceTests.h"
+#include "DivideAndConquer.h"
 
 using namespace std::chrono;
 
@@ -52,15 +53,15 @@ std::vector<glm::ivec2> GetUniqueRandomPoints(int count = 100)
 
 int main()
 {
-    //RunPerformanceTests();
+    RunPerformanceTests();
 	
 	//Create the window for drawing stuff
     sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
 
 	//Create 100 random points
-    std::vector<glm::ivec2> points = GetUniqueRandomPoints(1000);
+    std::vector<glm::ivec2> points = GetRandomPoints(1000);
 	//Create a new convex hull class and calculate the hull on the given points.
-    ConvexHullBase* hull = new DivideConquer{ points };
+    ConvexHullBase* hull = new DivideAndConquer{ points };
     hull->GenerateConvexHull();
 	
     while (window.isOpen())
@@ -74,9 +75,9 @@ int main()
         	if(event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::R)
         	{
         		//Create a new array of points and a new convex hull.
-                points = GetUniqueRandomPoints(1000);
+                points = GetRandomPoints(1000);
                 delete hull;
-                hull = new DivideConquer{ points };
+                hull = new DivideAndConquer{ points };
                 hull->GenerateConvexHull();
         	}
         }

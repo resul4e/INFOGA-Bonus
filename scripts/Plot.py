@@ -8,7 +8,7 @@ with open('../build/Noutput.csv', newline='') as csvfile:
     for row in spamreader:
         split = row[0].split(',')
         points.append(float(split[0]))
-        y.append(float(split[2]))
+        y.append(float(split[1]))
 
 
 plt.plot(points, y)

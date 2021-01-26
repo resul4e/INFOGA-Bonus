@@ -9,7 +9,10 @@
 #include <random>
 #define _USE_MATH_DEFINES
 #include <math.h>
-#include "DivideConquer.h"
+#include "DivideAndConquer.h"
+#include <set>
+
+using namespace std;
 
 //get a rng for random points
 extern std::default_random_engine generator;
@@ -56,8 +59,9 @@ void RunNH()
             allPoints.insert(allPoints.end(), innerPoints.begin(), innerPoints.end());
 
             //create a new convex hull object and generate the actual hull, measuring how long this takes.
-            ConvexHullBase* hull = new DivideConquer{ allPoints };
+            ConvexHullBase* hull = new DivideAndConquer{ allPoints };
             auto t1 = std::chrono::high_resolution_clock::now();
+            //divide(allPoints);
             hull->GenerateConvexHull();
             auto t2 = std::chrono::high_resolution_clock::now();
 
@@ -69,7 +73,7 @@ void RunNH()
         }
         //Save the number of points on the hull and the average time it took to finish 1 cycle of the algorithm
         output << i * 10 << "," << averageTime / static_cast<float>(repeats) << std::endl;
-        std::cout << "N " << i / 0.6f << "%" << std::endl;
+        std::cout << "NH " << i / 0.6f << "%" << std::endl;
     }
 
     output.close();
@@ -102,8 +106,9 @@ void RunN()
             allPoints.insert(allPoints.end(), innerPoints.begin(), innerPoints.end());
 
     		//create a new convex hull object and generate the actual hull, measuring how long this takes.
-            ConvexHullBase* hull = new DivideConquer{ allPoints };
+            ConvexHullBase* hull = new DivideAndConquer{ allPoints };
             auto t1 = std::chrono::high_resolution_clock::now();
+            //divide(allPoints);
             hull->GenerateConvexHull();
             auto t2 = std::chrono::high_resolution_clock::now();
 
